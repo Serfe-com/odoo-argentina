@@ -260,7 +260,8 @@ class AccountPaymentGroup(models.Model):
         auto_join=True,
     )
     account_internal_type = fields.Char(
-        compute='_compute_account_internal_type'
+        compute='_compute_account_internal_type',
+        default='asset_receivable'
     )
     move_line_ids = fields.Many2many(
         'account.move.line',

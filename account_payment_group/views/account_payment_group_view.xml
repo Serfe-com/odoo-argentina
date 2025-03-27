@@ -129,6 +129,7 @@
                 <!-- </group> -->
                 <!-- <group attrs="{'invisible': [('payment_subtype', '!=', 'double_validation')]}"> -->
                     <group>
+                        <field name="partner_type" />
                         <field name="selected_debt" options="{'currency_field': 'currency_id'}" states="draft,confirmed"/>
                         <field name="selected_finacial_debt" options="{'currency_field': 'currency_id'}" states="draft,confirmed" groups="account_financial_amount.account_use_financial_amounts"/>
                         <field name="matched_amount" options="{'currency_field': 'currency_id'}" states="posted" string="Monto a conciliar"/>
@@ -139,15 +140,15 @@
                     <group>
                         <field name="payments_amount" string="Monto pago" options="{'currency_field': 'currency_id'}"/>
                         <field name="payment_difference" options="{'currency_field': 'currency_id'}" states="draft,confirmed"/>
-<!--                         <label for="payments_amount" string="Payments Amount"/>
+                            <!--                         <label for="payments_amount" string="Payments Amount"/>
                         <div class="oe_inline">
                             <field name="payments_amount" options="{'currency_field': 'currency_id'}" class="oe_inline"/> (<field name="payment_difference" class="oe_inline"/>)
                         </div> -->
-                        <!-- <label for="payment_difference" attrs="{'invisible': [('payment_difference', '=', 0.0)]}"/> -->
-                        <!-- <div attrs="{'invisible': [('payment_difference', '=', 0.0)]}"> -->
+                            <!-- <label for="payment_difference" attrs="{'invisible': [('payment_difference', '=', 0.0)]}"/> -->
+                            <!-- <div attrs="{'invisible': [('payment_difference', '=', 0.0)]}"> -->
                             <!-- <field name="payment_difference_handling" widget="radio" nolabel="1"/> -->
-                        <!-- </div> -->
-                        <!-- <field name="writeoff_account_id" string="Post Difference In"
+                            <!-- </div> -->
+                            <!-- <field name="writeoff_account_id" string="Post Difference In"
                             attrs="{'invisible': [('payment_difference_handling','=','open')], 'required': [('payment_difference_handling', '=', 'reconcile')]}"/> -->
                     </group>
                 </group>
