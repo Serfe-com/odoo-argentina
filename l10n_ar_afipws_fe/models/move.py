@@ -123,6 +123,9 @@ class AccountMove(models.Model):
         string='AFIP Message',
         copy=False,
     )
+    afip_activity_codes = fields.Char(
+        string="AFIP Economic Activity Codes",
+    )
     afip_xml_request = fields.Text(
         string='AFIP XML Request',
         copy=False,
@@ -582,6 +585,9 @@ print "Observaciones:", wscdc.Obs
             if not moneda_id:
                 raise ValidationError('No esta definido el codigo AFIP en la moneda')
             cond_iva_receptor = commercial_partner.l10n_ar_afip_responsibility_type_id.code
+            # act_codes son las actividades económicas dentro de la factura
+            act_codes_str = inv.afip_activity_codes
+            act_codigos = [int(act_code.strip()) for act_code in act_codes_str.split(',')]
 
             CbteAsoc = inv.get_related_invoices_data()
 
@@ -596,7 +602,8 @@ print "Observaciones:", wscdc.Obs
                     imp_trib, imp_op_ex, fecha_cbte, fecha_venc_pago,
                     fecha_serv_desde, fecha_serv_hasta,
                     moneda_id, round(moneda_ctz,2),
-                    cond_iva_receptor
+                    cond_iva_receptor,
+                    act_codigos
                 )
                 if inv.other_taxes_amount > 0:
                     for move_tax in inv.move_tax_ids:
