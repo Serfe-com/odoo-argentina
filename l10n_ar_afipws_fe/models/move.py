@@ -587,7 +587,18 @@ print "Observaciones:", wscdc.Obs
             cond_iva_receptor = commercial_partner.l10n_ar_afip_responsibility_type_id.code
             # act_codes son las actividades económicas dentro de la factura
             act_codes_str = inv.afip_activity_codes
-            act_codigos = [int(act_code.strip()) for act_code in act_codes_str.split(',')]
+            
+            if not act_codes_str:
+                act_codes_str = inv.company_id.afip_activity_codes or "462190"
+                
+            act_codigos = []
+            try:
+                act_codigos = [int(act_code.strip()) for act_code in act_codes_str.split(',') if act_code.strip()]
+            except ValueError:
+                raise UserError(_('Las actividades económicas deben ser números válidos: %s') % act_codes_str
+                                
+            if len(act_codigos) == 0 :
+                raise UserError(_('No se han indicado actividades económicas: %s') % act_codes_str
 
             CbteAsoc = inv.get_related_invoices_data()
 
