@@ -123,9 +123,6 @@ class AccountMove(models.Model):
         string='AFIP Message',
         copy=False,
     )
-    afip_activity_codes = fields.Char(
-        string="AFIP Economic Activity Codes",
-    )
     afip_xml_request = fields.Text(
         string='AFIP XML Request',
         copy=False,
@@ -586,20 +583,16 @@ print "Observaciones:", wscdc.Obs
                 raise ValidationError('No esta definido el codigo AFIP en la moneda')
             cond_iva_receptor = commercial_partner.l10n_ar_afip_responsibility_type_id.code
             # act_codes son las actividades económicas dentro de la factura
-            act_codes_str = inv.afip_activity_codes
-            
-            if not act_codes_str:
-                act_codes_str = inv.company_id.afip_activity_codes or "462190"
-                
-            act_codigos = []
-            try:
-                act_codigos = [int(act_code.strip()) for act_code in act_codes_str.split(',') if act_code.strip()]
-            except ValueError:
-                raise UserError(_('Las actividades económicas deben ser números válidos: %s') % act_codes_str
-                                
-            if len(act_codigos) == 0 :
-                raise UserError(_('No se han indicado actividades económicas: %s') % act_codes_str
+            act_codes = inv.afip_activity_code_ids.mapped('code') or []
 
+            try:
+                act_codigos = [int(act_code.strip()) for act_code in act_codes if act_code.strip()]
+            except ValueError:
+                raise UserError(_('\n\nLas actividades económicas deben ser números válidos: %s\n\n') % str(act_codes))
+                                    
+            if not act_codigos or len(act_codigos) < 1:
+                raise UserError(_('\n\nNo se han indicado actividades económicas: %s\n\n') % str(act_codes))
+            
             CbteAsoc = inv.get_related_invoices_data()
 
             # create the invoice internally in the helper
