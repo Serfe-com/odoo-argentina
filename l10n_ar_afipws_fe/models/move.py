@@ -579,7 +579,7 @@ print "Observaciones:", wscdc.Obs
             moneda_id = inv.currency_id.l10n_ar_afip_code
             
             #moneda_ctz = round(1/inv.currency_id.rate,2)
-            if exchange_rate_at_date:
+            if inv.exchange_rate_at_date:
                 moneda_ctz = inv.exchange_rate_at_date
             else:
                 moneda_ctz = inv.currency_id.rate
