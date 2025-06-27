@@ -492,6 +492,9 @@ print "Observaciones:", wscdc.Obs
             display_req_logs = settings.get_param(
                 "corretaje_module.enable_display_afip_requests", False
             )
+            send_act_codes = settings.get_param(
+                "corretaje_module.enable_afip_activity_codes", False
+            )
 
             # authenticate against AFIP:
             ws = inv.company_id.get_connection(afip_ws).connect()
@@ -604,6 +607,8 @@ print "Observaciones:", wscdc.Obs
 
             # create the invoice internally in the helper
             if afip_ws == 'wsfe':
+                if not send_act_codes:
+                    act_codigos = None
                 moneda_ctz = 1 / moneda_ctz
                 inv.l10n_ar_currency_rate = moneda_ctz
                 ws.CrearFactura(
