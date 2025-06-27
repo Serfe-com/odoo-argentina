@@ -594,10 +594,7 @@ print "Observaciones:", wscdc.Obs
                 act_codigos = [int(act_code.strip()) for act_code in act_codes if act_code.strip()]
             except ValueError:
                 raise UserError(_('\n\nLas actividades económicas deben ser números válidos: %s\n\n') % str(act_codes))
-                                    
-            if not act_codigos or len(act_codigos) < 1:
-                raise UserError(_('\n\nNo se han indicado actividades económicas: %s\n\n') % str(act_codes))
-            
+                                            
             CbteAsoc = inv.get_related_invoices_data()
 
             # create the invoice internally in the helper
