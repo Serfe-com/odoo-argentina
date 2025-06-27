@@ -611,6 +611,8 @@ print "Observaciones:", wscdc.Obs
                     cond_iva_receptor,
                     act_codigos
                 )
+                _logger.info(_('AFIP CREAR FACTURA Request %s' % ws.XmlRequest))
+                
                 if inv.other_taxes_amount > 0:
                     for move_tax in inv.move_tax_ids:
                         if move_tax.tax_id.tax_group_id.tax_type != 'vat':
@@ -838,6 +840,7 @@ print "Observaciones:", wscdc.Obs
             try:
                 if afip_ws == 'wsfe':
                     ws.CAESolicitar()
+                    _logger.info(_('AFIP Solicitar CAE Request %s' % ws.XmlRequest))
                     vto = ws.Vencimiento
                 elif afip_ws == 'wsmtxca':
                     ws.AutorizarComprobante()
