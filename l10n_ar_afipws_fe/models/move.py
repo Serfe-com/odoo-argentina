@@ -487,6 +487,11 @@ print "Observaciones:", wscdc.Obs
             journal = inv.journal_id
             pos_number = journal.l10n_ar_afip_pos_number
             doc_afip_code = inv.l10n_latam_document_type_id.code
+            
+            settings = self.env["ir.config_parameter"].sudo()
+            display_req_logs = settings.get_param(
+                "corretaje_module.enable_display_afip_requests", False
+            )
 
             # authenticate against AFIP:
             ws = inv.company_id.get_connection(afip_ws).connect()
@@ -611,7 +616,8 @@ print "Observaciones:", wscdc.Obs
                     cond_iva_receptor,
                     act_codigos
                 )
-                _logger.info(_('AFIP CREAR FACTURA Request %s' % ws.XmlRequest))
+                if display_req_logs:
+                    _logger.info(_('AFIP CREAR FACTURA Request %s' % ws.XmlRequest))
                 
                 if inv.other_taxes_amount > 0:
                     for move_tax in inv.move_tax_ids:
@@ -840,8 +846,9 @@ print "Observaciones:", wscdc.Obs
             try:
                 if afip_ws == 'wsfe':
                     ws.CAESolicitar()
-                    _logger.info(_('AFIP Solicitar CAE Request %s' % ws.XmlRequest))
                     vto = ws.Vencimiento
+                    if display_req_logs:
+                        _logger.info(_('AFIP Solicitar CAE Request %s' % ws.XmlRequest))
                 elif afip_ws == 'wsmtxca':
                     ws.AutorizarComprobante()
                     vto = ws.Vencimiento
