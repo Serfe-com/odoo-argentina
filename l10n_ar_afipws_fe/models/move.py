@@ -487,6 +487,14 @@ print "Observaciones:", wscdc.Obs
             journal = inv.journal_id
             pos_number = journal.l10n_ar_afip_pos_number
             doc_afip_code = inv.l10n_latam_document_type_id.code
+            
+            settings = self.env["ir.config_parameter"].sudo()
+            display_req_logs = settings.get_param(
+                "corretaje_module.enable_display_afip_requests", False
+            )
+            send_act_codes = settings.get_param(
+                "corretaje_module.enable_afip_activity_codes", False
+            )
 
             # authenticate against AFIP:
             ws = inv.company_id.get_connection(afip_ws).connect()
@@ -577,16 +585,30 @@ print "Observaciones:", wscdc.Obs
             # imp_subtotal = str("%.2f" % inv.amount_untaxed)
             imp_op_ex = str("%.2f" % inv.vat_exempt_base_amount)
             moneda_id = inv.currency_id.l10n_ar_afip_code
+            
             #moneda_ctz = round(1/inv.currency_id.rate,2)
-            moneda_ctz = inv.currency_id.rate
+            if inv.exchange_rate_at_date:
+                moneda_ctz = inv.exchange_rate_at_date
+            else:
+                moneda_ctz = inv.currency_id.rate
+                
             if not moneda_id:
                 raise ValidationError('No esta definido el codigo AFIP en la moneda')
             cond_iva_receptor = commercial_partner.l10n_ar_afip_responsibility_type_id.code
+            # act_codes son las actividades económicas dentro de la factura
+            act_codes = inv.afip_activity_code_ids.mapped('code') or []
 
+            try:
+                act_codigos = [int(act_code.strip()) for act_code in act_codes if act_code.strip()]
+            except ValueError:
+                raise UserError(_('\n\nLas actividades económicas deben ser números válidos: %s\n\n') % str(act_codes))
+                                            
             CbteAsoc = inv.get_related_invoices_data()
 
             # create the invoice internally in the helper
             if afip_ws == 'wsfe':
+                if not send_act_codes:
+                    act_codigos = None
                 moneda_ctz = 1 / moneda_ctz
                 inv.l10n_ar_currency_rate = moneda_ctz
                 ws.CrearFactura(
@@ -596,8 +618,12 @@ print "Observaciones:", wscdc.Obs
                     imp_trib, imp_op_ex, fecha_cbte, fecha_venc_pago,
                     fecha_serv_desde, fecha_serv_hasta,
                     moneda_id, round(moneda_ctz,2),
-                    cond_iva_receptor
+                    cond_iva_receptor,
+                    act_codigos
                 )
+                if display_req_logs:
+                    _logger.info(_('AFIP CREAR FACTURA Request %s' % ws.XmlRequest))
+                
                 if inv.other_taxes_amount > 0:
                     for move_tax in inv.move_tax_ids:
                         if move_tax.tax_id.tax_group_id.tax_type != 'vat':
@@ -826,6 +852,8 @@ print "Observaciones:", wscdc.Obs
                 if afip_ws == 'wsfe':
                     ws.CAESolicitar()
                     vto = ws.Vencimiento
+                    if display_req_logs:
+                        _logger.info(_('AFIP Solicitar CAE Request %s' % ws.XmlRequest))
                 elif afip_ws == 'wsmtxca':
                     ws.AutorizarComprobante()
                     vto = ws.Vencimiento
