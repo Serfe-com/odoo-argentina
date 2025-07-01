@@ -609,6 +609,9 @@ print "Observaciones:", wscdc.Obs
             if afip_ws == 'wsfe':
                 if not send_act_codes:
                     act_codigos = None
+                if display_req_logs:
+                    _logger.info(_('\n\nCotizacion: %s\n\n' % moneda_ctz))
+                    
                 moneda_ctz = 1 / moneda_ctz
                 inv.l10n_ar_currency_rate = moneda_ctz
                 ws.CrearFactura(
