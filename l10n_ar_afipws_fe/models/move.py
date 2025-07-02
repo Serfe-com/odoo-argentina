@@ -586,8 +586,7 @@ print "Observaciones:", wscdc.Obs
             imp_op_ex = str("%.2f" % inv.vat_exempt_base_amount)
             moneda_id = inv.currency_id.l10n_ar_afip_code
             
-            #moneda_ctz = round(1/inv.currency_id.rate,2)
-            moneda_ctz = inv.currency_id.rate
+            moneda_ctz = inv.currency_id.inverse_rate
             if inv.exchange_rate_at_date:
                 moneda_ctz = inv.exchange_rate_at_date
                 if display_req_logs:
