@@ -613,7 +613,6 @@ print "Observaciones:", wscdc.Obs
                 if not send_act_codes:
                     act_codigos = None
                     
-                moneda_ctz = 1 / moneda_ctz
                 inv.l10n_ar_currency_rate = moneda_ctz
                 ws.CrearFactura(
                     concepto, tipo_doc, nro_doc, doc_afip_code, pos_number,
