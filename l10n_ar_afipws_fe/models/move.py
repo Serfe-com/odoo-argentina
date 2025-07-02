@@ -588,8 +588,12 @@ print "Observaciones:", wscdc.Obs
             
             #moneda_ctz = round(1/inv.currency_id.rate,2)
             moneda_ctz = inv.currency_id.rate
-            if inv.exchange_rate_at_date and inv.currency_id == self.env.ref("base.USD"):
+            if inv.exchange_rate_at_date:
                 moneda_ctz = inv.exchange_rate_at_date
+                if display_req_logs:
+                    _logger.info(_('Custom Cotizacion %s' % moneda_ctz))
+            elif display_req_logs:
+                _logger.info(_('Cotizacion Heredada %s' % moneda_ctz))
                 
             if not moneda_id:
                 raise ValidationError('No esta definido el codigo AFIP en la moneda')
