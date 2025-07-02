@@ -587,10 +587,7 @@ print "Observaciones:", wscdc.Obs
             moneda_id = inv.currency_id.l10n_ar_afip_code
             
             #moneda_ctz = round(1/inv.currency_id.rate,2)
-            if inv.exchange_rate_at_date and inv.currency_id == self.env.ref("base.ARS") and inv.is_invoice_pesificable:
-                moneda_ctz = inv.exchange_rate_at_date
-            else:
-                moneda_ctz = inv.currency_id.rate
+            moneda_ctz = inv.currency_id.rate
                 
             if not moneda_id:
                 raise ValidationError('No esta definido el codigo AFIP en la moneda')
@@ -609,8 +606,6 @@ print "Observaciones:", wscdc.Obs
             if afip_ws == 'wsfe':
                 if not send_act_codes:
                     act_codigos = None
-                if display_req_logs:
-                    _logger.info(_('\n\nCotizacion: %s\n\n' % moneda_ctz))
                     
                 moneda_ctz = 1 / moneda_ctz
                 inv.l10n_ar_currency_rate = moneda_ctz
