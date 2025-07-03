@@ -586,11 +586,13 @@ print "Observaciones:", wscdc.Obs
             imp_op_ex = str("%.2f" % inv.vat_exempt_base_amount)
             moneda_id = inv.currency_id.l10n_ar_afip_code
             
-            #moneda_ctz = round(1/inv.currency_id.rate,2)
+            moneda_ctz = inv.currency_id.inverse_rate
             if inv.exchange_rate_at_date:
                 moneda_ctz = inv.exchange_rate_at_date
-            else:
-                moneda_ctz = inv.currency_id.rate
+                if display_req_logs:
+                    _logger.info(_('Custom Cotizacion %s' % moneda_ctz))
+            elif display_req_logs:
+                _logger.info(_('Cotizacion Heredada %s' % moneda_ctz))
                 
             if not moneda_id:
                 raise ValidationError('No esta definido el codigo AFIP en la moneda')
@@ -609,7 +611,7 @@ print "Observaciones:", wscdc.Obs
             if afip_ws == 'wsfe':
                 if not send_act_codes:
                     act_codigos = None
-                moneda_ctz = 1 / moneda_ctz
+                    
                 inv.l10n_ar_currency_rate = moneda_ctz
                 ws.CrearFactura(
                     concepto, tipo_doc, nro_doc, doc_afip_code, pos_number,
