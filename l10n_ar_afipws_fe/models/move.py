@@ -587,7 +587,7 @@ print "Observaciones:", wscdc.Obs
             moneda_id = inv.currency_id.l10n_ar_afip_code
             
             moneda_ctz = inv.currency_id.inverse_rate
-            if inv.exchange_rate_at_date:
+            if inv.exchange_rate_at_date and inv.currency_id != inv.company_id.currency_id:
                 moneda_ctz = inv.exchange_rate_at_date
                 if display_req_logs:
                     _logger.info(_('Custom Cotizacion %s' % moneda_ctz))
