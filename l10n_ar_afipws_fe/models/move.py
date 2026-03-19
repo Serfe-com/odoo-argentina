@@ -938,14 +938,13 @@ print "Observaciones:", wscdc.Obs
                     "tipoDocRec": int(rec.partner_id.l10n_latam_identification_type_id.l10n_ar_afip_code),
                     "nroDocRec": int(rec.partner_id.vat),
                     "tipoCodAut": 'E',
-                    "codAut": rec.afip_auth_code,
+                    "codAut": int(rec.afip_auth_code),
                 }
                 
                 import json, base64
                 json_str = json.dumps(vals_qr)
                 b64_json = base64.b64encode(json_str.encode()).decode()
                 rec.fe_qr_url = 'https://www.afip.gob.ar/fe/qr/?p=' + b64_json
-                
                 qr.add_data(rec.fe_qr_url)
                 qr.make(fit=True)
                 img = qr.make_image()
