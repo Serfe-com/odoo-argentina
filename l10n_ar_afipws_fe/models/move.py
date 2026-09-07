@@ -619,7 +619,7 @@ print "Observaciones:", wscdc.Obs
                     imp_iva,
                     imp_trib, imp_op_ex, fecha_cbte, fecha_venc_pago,
                     fecha_serv_desde, fecha_serv_hasta,
-                    moneda_id, round(moneda_ctz,2),
+                    moneda_id, round(moneda_ctz,4),
                     cond_iva_receptor,
                     act_codigos
                 )
@@ -694,7 +694,7 @@ print "Observaciones:", wscdc.Obs
                     doc_afip_code, pos_number, cbte_nro, fecha_cbte,
                     imp_total, tipo_expo, permiso_existente, pais_dst_cmp,
                     nombre_cliente, cuit_pais_cliente, domicilio_cliente,
-                    id_impositivo, moneda_id, round(1/moneda_ctz,2), obs_comerciales,
+                    id_impositivo, moneda_id, round(1/moneda_ctz,4), obs_comerciales,
                     obs_generales, forma_pago, incoterms,
                     idioma_cbte, incoterms_ds
                 )
@@ -723,7 +723,7 @@ print "Observaciones:", wscdc.Obs
                     tipo_doc, nro_doc, zona, doc_afip_code, pos_number,
                     cbte_nro, fecha_cbte, imp_total, imp_neto, imp_iva,
                     imp_tot_conc, impto_liq_rni, imp_op_ex, imp_perc, imp_iibb,
-                    imp_perc_mun, imp_internos, moneda_id, round(moneda_ctz,2),
+                    imp_perc_mun, imp_internos, moneda_id, round(moneda_ctz,4),
                     fecha_venc_pago
                 )
 
